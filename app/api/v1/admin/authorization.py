@@ -18,6 +18,9 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.core.security import authenticate_user, create_access_token
 from app.schemas.token import Token
 from app.core import config
+from app.utils.logger import configure_logger
+
+logger = configure_logger()
 
 router = APIRouter()
 
@@ -45,6 +48,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     """
     # Authenticate the user with the provided username and password.
     if not authenticate_user(form_data.username, form_data.password):
+        logger.warning("Incorrect username or password")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

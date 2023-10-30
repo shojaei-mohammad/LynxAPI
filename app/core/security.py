@@ -24,10 +24,10 @@ from datetime import datetime, timedelta
 import pam
 from passlib.context import CryptContext
 from app.core import config
-import logging
+from app.utils.logger import configure_logger
 
 # Setup logging
-logger = logging.getLogger(__name__)
+logger = configure_logger()
 
 # Secret key to encode and decode JWT token
 SECRET_KEY = config.SECRET_KEY
