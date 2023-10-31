@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from fastapi.openapi.utils import get_openapi
 import uvicorn
 from app.api.v1.admin import authorization
-from app.api.v1.device import get_info
+from app.api.v1 import device
 from app.middleware.check_token import JWTTokenMiddleware
 
 
@@ -20,7 +19,11 @@ app = FastAPI(
 app.add_middleware(JWTTokenMiddleware)
 
 app.include_router(authorization.router, prefix="/api/v1/admin", tags=["admin"])
-app.include_router(info.router, prefix="/api/v1", tags=["core"])
+app.include_router(device.get_info.router, prefix="/api/v1", tags=["core"])
+app.include_router(device.get_hostname.router, prefix="/api/v1", tags=["core"])
+app.include_router(device.get_time.router, prefix="/api/v1", tags=["core"])
+app.include_router(device.get_interfaces.router, prefix="/api/v1", tags=["core"])
+app.include_router(device.get_interface_by_name.router, prefix="/api/v1", tags=["core"])
 
 
 @app.get("/")

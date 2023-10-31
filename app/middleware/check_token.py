@@ -83,11 +83,8 @@ class JWTTokenMiddleware:
 
         # Try to decode the token using the SECRET_KEY.
         # If decoding fails, log the error and send a custom response.
-        print("this is token:", token)
-        print("this is secret:", SECRET_KEY)
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            print("this is payload", payload)
             request.state.user = payload.get("sub")
         except jwt.PyJWTError as e:
             logger.error(f"Token validation error: {e}")
