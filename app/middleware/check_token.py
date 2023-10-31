@@ -18,6 +18,7 @@ from starlette.responses import JSONResponse
 
 logger = configure_logger()
 
+
 class JWTTokenMiddleware:
     """
     Middleware to check for valid JWT tokens in incoming requests.
@@ -61,7 +62,12 @@ class JWTTokenMiddleware:
             return
 
         # Extract the token from the Authorization header.
-        token = request.headers.get("Authorization")
+        authorization_header = request.headers.get("Authorization")
+        token = (
+            authorization_header.replace("Bearer ", "")
+            if authorization_header
+            else None
+        )
 
         # If no token is found, log the unauthorized access attempt and send a custom response.
         if not token:
@@ -77,8 +83,11 @@ class JWTTokenMiddleware:
 
         # Try to decode the token using the SECRET_KEY.
         # If decoding fails, log the error and send a custom response.
+        print("this is token:", token)
+        print("this is secret:", SECRET_KEY)
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            print("this is payload", payload)
             request.state.user = payload.get("sub")
         except jwt.PyJWTError as e:
             logger.error(f"Token validation error: {e}")
