@@ -98,9 +98,9 @@ def authenticate_user(username: str, password: str) -> bool:
     Returns:
     - bool: True if authentication was successful, False otherwise.
     """
-    p = pam.pam()
+
     try:
-        return p.authenticate(username, password)
+        return pam.authenticate(username, password)
     except Exception as e:
         logger.error(f"Error during authentication: {e}")
         return False

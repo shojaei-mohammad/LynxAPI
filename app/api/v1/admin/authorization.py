@@ -26,7 +26,7 @@ router = APIRouter()
 
 # Using OAuth2 password flow, where the client (usually a frontend) will collect the username and password,
 # then send them to the server to get an access token.
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/admin/token")
 
 
 @router.post("/token", response_model=Token)
@@ -47,6 +47,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     - HTTPException: If authentication fails.
     """
     # Authenticate the user with the provided username and password.
+
     if not authenticate_user(form_data.username, form_data.password):
         logger.warning("Incorrect username or password")
         raise HTTPException(
