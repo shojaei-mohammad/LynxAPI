@@ -33,7 +33,7 @@ def create_user(username: str, password: str, role_id: int):
 
     # Create and add the user
     user = User(username=username, roles=[role])
-    user.password = hashed_password.decode(
+    user.hashed_password = hashed_password.decode(
         "utf-8"
     )  # Storing the hashed password as a string in the database
     session.add(user)

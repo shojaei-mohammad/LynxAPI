@@ -47,6 +47,7 @@ class User(Base):
 
     user_id: int = Column(Integer, primary_key=True)
     username: str = Column(String, unique=True, nullable=False)
+    hashed_password: str = Column(String, nullable=False)
     roles = relationship("Role", secondary=user_roles, back_populates="users")
 
 

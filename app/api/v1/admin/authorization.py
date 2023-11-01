@@ -10,7 +10,7 @@ The main function in this module is `login_for_access_token`, which performs the
 and token generation. It makes use of utility functions and settings from other modules to validate
 user credentials and generate JWT tokens.
 """
-
+from sqlalchemy.orm import Session
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -19,6 +19,7 @@ from app.core.security import authenticate_user, create_access_token
 from app.schemas.token import Token
 from app.core import config
 from app.utils.logger import configure_logger
+from app.db.database import get_db
 
 logger = configure_logger()
 
@@ -30,7 +31,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/admin/token")
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     """
     Authenticate the user.
 
@@ -47,8 +50,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     - HTTPException: If authentication fails.
     """
     # Authenticate the user with the provided username and password.
-
-    if not authenticate_user(form_data.username, form_data.password):
+    if not authenticate_user(db, form_data.username, form_data.password):
         logger.warning("Incorrect username or password")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

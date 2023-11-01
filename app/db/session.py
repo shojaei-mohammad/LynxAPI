@@ -46,11 +46,8 @@ def init_db():
     # Create a new role named "Admin" and assign the "full_access" permission to it.
     admin_role = Role(role_name="Admin", permissions=[perm1])
 
-    # Create a new user named "admin" and assign the "Admin" role to it.
-    admin_user = User(username="admin", roles=[admin_role])
-
     # Add the new user to the session and commit the changes to the database.
-    session.add(admin_user)
+    session.add(admin_role)
     session.commit()
 
 

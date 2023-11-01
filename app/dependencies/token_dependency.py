@@ -1,24 +1,30 @@
-# app/dependencies/token_dependency.py
-
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-import jwt
-from app.core.security import SECRET_KEY
+from sqlalchemy.orm import Session
 
-# Use OAuth2PasswordBearer for token extraction
-security = OAuth2PasswordBearer(tokenUrl="/api/v1/admin/token")
+from app.api.v1.admin.authorization import oauth2_scheme
+from app.db.models import User
+from app.db.database import get_db
+from app.schemas.token import Token
+from app.core.security import decode_token, JWTError
 
 
-async def get_current_user(token: str = Depends(security)):
-    """
-    Decode the token using JWT and return the current user.
-    """
+def get_current_user(
+    db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        return payload.get("sub")
-    except jwt.PyJWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        payload = decode_token(token)  # Assuming you have a function to decode JWT
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = Token(username=username)
+    except JWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.username == token_data.username).first()
+    if user is None:
+        raise credentials_exception
+    return user

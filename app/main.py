@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import HTTPException, FastAPI
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import DBAPIError
 import uvicorn
 from app.api.v1.admin import authorization
 from app.api.v1 import device
@@ -24,6 +26,22 @@ app.include_router(device.get_hostname.router, prefix="/api/v1", tags=["core"])
 app.include_router(device.get_time.router, prefix="/api/v1", tags=["core"])
 app.include_router(device.get_interfaces.router, prefix="/api/v1", tags=["core"])
 app.include_router(device.get_interface_by_name.router, prefix="/api/v1", tags=["core"])
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message": exc.detail},
+    )
+
+
+@app.exception_handler(DBAPIError)
+async def sqlalchemy_exception_handler(request, exc: DBAPIError):
+    return JSONResponse(
+        status_code=400,
+        content={"message": "An error occurred with the database."},
+    )
 
 
 @app.get("/")
