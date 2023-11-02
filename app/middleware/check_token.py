@@ -9,12 +9,13 @@ The middleware excludes certain routes from token checking, such as documentatio
 and the token generation endpoint.
 """
 
-from fastapi import Request, status
-from starlette.types import ASGIApp, Scope, Receive, Send
 import jwt
+from fastapi import Request, status
+from starlette.responses import JSONResponse
+from starlette.types import ASGIApp, Scope, Receive, Send
+
 from app.core.security import SECRET_KEY
 from app.utils.logger import configure_logger
-from starlette.responses import JSONResponse
 
 logger = configure_logger()
 
@@ -56,7 +57,7 @@ class JWTTokenMiddleware:
             "/docs",
             "/redoc",
             "/openapi.json",
-            "/api/v1/admin/token",
+            "/api/admin/token",
         ]:
             await self.app(scope, receive, send)
             return

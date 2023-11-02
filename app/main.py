@@ -1,11 +1,12 @@
+import uvicorn
 from fastapi import HTTPException, FastAPI
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError
-import uvicorn
-from app.api.v1.admin import authorization
-from app.api.v1 import device
-from app.middleware.check_token import JWTTokenMiddleware
 
+from app.api.v1 import device
+from app.api.v1.admin import authorization
+from app.core.config import DOCS
+from app.middleware.check_token import JWTTokenMiddleware
 
 app = FastAPI(
     title="RasAPI Documentation",
@@ -13,19 +14,19 @@ app = FastAPI(
     version="1.0.0",
     openapi_tags=[],  # your tags if any
     openapi_url="/openapi.json",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/docs" if DOCS else None,
+    redoc_url="/redoc" if DOCS else None,
 )
 
 
 app.add_middleware(JWTTokenMiddleware)
 
-app.include_router(authorization.router, prefix="/api/v1/admin", tags=["admin"])
-app.include_router(device.get_info.router, prefix="/api/v1", tags=["core"])
-app.include_router(device.get_hostname.router, prefix="/api/v1", tags=["core"])
-app.include_router(device.get_time.router, prefix="/api/v1", tags=["core"])
-app.include_router(device.get_interfaces.router, prefix="/api/v1", tags=["core"])
-app.include_router(device.get_interface_by_name.router, prefix="/api/v1", tags=["core"])
+app.include_router(authorization.router, prefix="/api/admin", tags=["admin"])
+app.include_router(device.get_info.router, prefix="/api", tags=["core"])
+app.include_router(device.get_hostname.router, prefix="/api", tags=["core"])
+app.include_router(device.get_time.router, prefix="/api", tags=["core"])
+app.include_router(device.get_interfaces.router, prefix="/api", tags=["core"])
+app.include_router(device.get_interface_by_name.router, prefix="/api", tags=["core"])
 
 
 @app.exception_handler(HTTPException)

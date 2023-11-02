@@ -28,7 +28,6 @@ def init_db():
     3. Populates the tables with a basic set of entities:
        - A permission named "full_access".
        - An "Admin" role with the "full_access" permission.
-       - An "admin" user with the "Admin" role.
     """
     # Create an engine connected to the SQLite database.
     engine = create_engine(DATABASE_URL)

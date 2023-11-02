@@ -60,7 +60,7 @@ def decode_token(token: str):
     except jwt.ExpiredSignatureError:
         logger.error("Token has expired")
         raise JWTError("Token has expired")
-    except jwt.JWTError as e:
+    except JWTError as e:
         logger.error(f"Invalid token. Reason: {str(e)}")
         raise JWTError("Invalid token")
 
