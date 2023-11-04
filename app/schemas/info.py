@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class SystemInfoResponse(BaseModel):
+    uuid: str = Field(description="The system Universally Unique Identifier")
     hostname: str = Field(
         description="The name assigned to the system, often used to identify it on a network."
     )
@@ -21,9 +22,6 @@ class SystemInfoResponse(BaseModel):
     memory: str = Field(
         description="Information about the system's memory configuration, including total available memory and its "
         "type."
-    )
-    ip_address: str = Field(
-        description="The primary IP address assigned to the system."
     )
     current_time: str = Field(description="The current system time in string format.")
     network_interfaces: Dict[str, Any] = Field(

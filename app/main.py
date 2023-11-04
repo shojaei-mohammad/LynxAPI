@@ -27,6 +27,10 @@ app.include_router(device.get_hostname.router, prefix="/api", tags=["core"])
 app.include_router(device.get_time.router, prefix="/api", tags=["core"])
 app.include_router(device.get_interfaces.router, prefix="/api", tags=["core"])
 app.include_router(device.get_interface_by_name.router, prefix="/api", tags=["core"])
+app.include_router(device.set_ip_settings.router, prefix="/api", tags=["core"])
+app.include_router(device.set_timezone.router, prefix="/api", tags=["core"])
+app.include_router(device.set_timezone.router, prefix="/api", tags=["core"])
+app.include_router(device.set_hostname.router, prefix="/api", tags=["core"])
 
 
 @app.exception_handler(HTTPException)
@@ -50,9 +54,5 @@ def read_root():
     return {"Hello": "World"}
 
 
-def main() -> None:
-    uvicorn.run("main:app", host="0.0.0.0", port=8081, reload=True)
-
-
 if __name__ == "__main__":
-    main()
+    uvicorn.run("main:app", host="0.0.0.0", port=8081, reload=True)

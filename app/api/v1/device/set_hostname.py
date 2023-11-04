@@ -1,64 +1,43 @@
-from typing import Dict
+import subprocess
 
-from fastapi import APIRouter, Depends, HTTPException
-from subprocess import run, CalledProcessError
+from fastapi import APIRouter, HTTPException, Depends
+
 from app.dependencies.token_dependency import get_current_user
-from app.schemas.set_hostname import (
-    SetHostnameRequest,
-)  # Assuming you've saved the model in this location
+from app.schemas.hostname import Hostname
 
 router = APIRouter()
 
 
-def set_system_hostname(new_hostname: str) -> None:
-    """
-    Set system hostname.
-
-    Parameters:
-        new_hostname (str): The new hostname to be set.
-
-    Raises:
-        Exception: If there's an error setting the hostname.
-    """
+def update_hostname(hostname: str) -> bool:
     try:
-        result = run(
-            ["sudo", "hostnamectl", "set-hostname", new_hostname],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        if result.returncode != 0:
-            raise Exception(result.stderr)
-    except CalledProcessError as e:
-        raise Exception(e.stderr)
+        subprocess.run(["hostnamectl", "set-hostname", hostname], check=True)
+        return True
+    except Exception as e:
+        print(f"Error setting hostname: {e}")
+        return False
 
 
-@router.post("/device/set-hostname")
-async def set_device_hostname(
-    request: SetHostnameRequest, current_user: str = Depends(get_current_user)
-) -> Dict[str, str]:
+@router.post("/set_hostname/")
+async def set_hostname_endpoint(
+    hostname_data: Hostname, current_user: str = Depends(get_current_user)
+):
     """
-    Endpoint to set the device's hostname.
+    Update the system's hostname.
 
-    Parameters:
-        request (SetHostnameRequest): Contains the new hostname to be set.
-        user (str, optional): The authenticated user's name/ID. Defaults to Depends on(verify_token).
+    This endpoint allows authorized users to update the system's current hostname
+    to the provided value.
+
+    Args:
+        hostname_data (Hostname): A Pydantic model that captures the desired hostname.
 
     Returns:
-        dict: A dictionary confirming the change.
+        dict: A dictionary with a status key indicating the success or failure of the hostname update.
 
     Raises:
-        HTTPException: If the user is not authenticated or if there's an error setting the hostname.
-        :param request:
-        :param current_user:
+        HTTPException: If there's an error updating the hostname.
     """
-
-    # Check if the user has the necessary privileges. This is a basic example; you might have more complex logic.
-    if not current_user == "admin":
-        raise HTTPException(status_code=403, detail="Permission denied")
-
-    try:
-        set_system_hostname(request.hostname)
-        return {"status": "success", "message": f"Hostname set to {request.hostname}"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    result = update_hostname(hostname_data.hostname)
+    if result:
+        return {"status": "Hostname updated successfully!"}
+    else:
+        raise HTTPException(status_code=500, detail="Error updating hostname.")
