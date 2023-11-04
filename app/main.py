@@ -27,10 +27,9 @@ app.include_router(device.get_hostname.router, prefix="/api", tags=["core"])
 app.include_router(device.get_time.router, prefix="/api", tags=["core"])
 app.include_router(device.get_interfaces.router, prefix="/api", tags=["core"])
 app.include_router(device.get_interface_by_name.router, prefix="/api", tags=["core"])
-app.include_router(device.set_ip_settings.router, prefix="/api", tags=["core"])
-app.include_router(device.set_timezone.router, prefix="/api", tags=["core"])
 app.include_router(device.set_timezone.router, prefix="/api", tags=["core"])
 app.include_router(device.set_hostname.router, prefix="/api", tags=["core"])
+app.include_router(device.set_ip_settings.router, prefix="/api", tags=["core"])
 
 
 @app.exception_handler(HTTPException)
