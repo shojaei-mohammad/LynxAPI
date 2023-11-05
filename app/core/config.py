@@ -30,6 +30,3 @@ SCRIPTS_PATH = env.str("SCRIPTS_PATH")  # Path to network-config script
 
 # Database configuration
 SQLALCHEMY_DATABASE_URL = env.str("SQLALCHEMY_DATABASE_URL")  # Database connection URL
-SQLALCHEMY_DATABASE_ABS_URL = env.str(
-    "SQLALCHEMY_DATABASE_ABS_URL"
-)  # Database aboloute url path
