@@ -9,13 +9,13 @@ Key Functions:
 - init_db: Initializes the database and populates it with basic entities.
 """
 
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from models import Base, Permission, Role, User
+from models import Base, Permission, Role
 
 # Database URL pointing to the SQLite database file.
-DATABASE_URL = "sqlite:///rbac.db"
+DATABASE_URL = "SQLALCHEMY_DATABASE_URL"
 
 
 def init_db():

@@ -11,11 +11,18 @@ router = APIRouter()
 
 def set_wifi_connection(ssid: str, password: str) -> bool:
     # Using 'nmcli' to connect to a Wi-Fi network
-    command = f"nmcli dev wifi connect {shlex.quote(ssid)} password {shlex.quote(password)}"
+    command = (
+        f"nmcli dev wifi connect {shlex.quote(ssid)} password {shlex.quote(password)}"
+    )
 
     try:
         # Execute the command without using shell=True for security reasons
-        subprocess.run(shlex.split(command), check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(
+            shlex.split(command),
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
         return True
     except subprocess.CalledProcessError as e:
         print(f"Error setting Wi-Fi: {e.stderr.decode().strip()}")

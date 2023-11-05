@@ -1,3 +1,6 @@
+# app/api/v1/device/__init__.py
+
+
 from .get_hostname import *
 from .get_info import *
 from .get_interface_by_name import *

@@ -1,16 +1,10 @@
-from pathlib import Path
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Define the base directory by getting the absolute path of the directory containing this script
-BASE_DIR: Path = Path(__file__).resolve().parent
-
-# Define the SQLite database URL using the BASE_DIR
-DATABASE_URL: str = f"sqlite:///{BASE_DIR}/rbac.db"
+from app.core.config import SQLALCHEMY_DATABASE_ABS_URL
 
 # Create the database engine
-engine = create_engine(DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_ABS_URL)
 
 # Create a local session factory bound to the engine
 SessionLocal = sessionmaker(bind=engine)

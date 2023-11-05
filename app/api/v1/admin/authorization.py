@@ -26,7 +26,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/admin/token")
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=Token, summary="Get authorization token")
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):

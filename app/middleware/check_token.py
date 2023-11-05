@@ -14,7 +14,7 @@ from fastapi import Request, status
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Scope, Receive, Send
 
-from app.core.security import SECRET_KEY
+from app.core.config import API_SECRET_KEY
 from app.utils.logger import configure_logger
 
 logger = configure_logger()
@@ -85,7 +85,7 @@ class JWTTokenMiddleware:
         # Try to decode the token using the SECRET_KEY.
         # If decoding fails, log the error and send a custom response.
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            payload = jwt.decode(token, API_SECRET_KEY, algorithms=["HS256"])
             request.state.user = payload.get("sub")
         except jwt.PyJWTError as e:
             logger.error(f"Token validation error: {e}")

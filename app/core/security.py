@@ -16,20 +16,19 @@ Dependencies:
 - app.core.config: For application configurations like the secret key.
 """
 
-import jwt
 from datetime import datetime, timedelta
+
+import jwt
 from passlib.context import CryptContext
-from app.core import config
-from app.utils.logger import configure_logger
 from sqlalchemy.orm import Session
+
+from app.core.config import API_SECRET_KEY, API_ALGORITHM
 from app.db.models import User
+from app.utils.logger import configure_logger
 
 # Setup logging
 logger = configure_logger()
 
-# Secret key to encode and decode JWT token
-SECRET_KEY = config.SECRET_KEY
-ALGORITHM = "HS256"
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -55,7 +54,7 @@ def decode_token(token: str):
     - JWTError: If the token has expired or is invalid.
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, API_SECRET_KEY, algorithms=[API_ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
         logger.error("Token has expired")
@@ -110,7 +109,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     try:
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
+        encoded_jwt = jwt.encode(to_encode, API_SECRET_KEY, algorithm="HS256")
     except Exception as e:
         logger.error(f"Error encoding JWT: {e}")
         raise ValueError("Error encoding JWT")
