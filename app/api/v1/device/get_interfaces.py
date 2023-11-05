@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
 import psutil
+from fastapi import APIRouter, Depends
 
 from app.dependencies.token_dependency import get_current_user
 from app.schemas.interfaces import InterfacesResponse
@@ -41,7 +41,11 @@ def get_interfaces_info() -> dict:
     return interfaces_info
 
 
-@router.get("/device/interfaces", response_model=InterfacesResponse)
+@router.get(
+    "/device/interfaces",
+    response_model=InterfacesResponse,
+    summary="Get all available interfaces",
+)
 async def interfaces_info(current_user: str = Depends(get_current_user)) -> dict:
     """
     Endpoint to fetch information about all available network interfaces using psutil.

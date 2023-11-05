@@ -8,7 +8,9 @@ from app.schemas.system_resources import SystemResources
 router = APIRouter()
 
 
-@router.get("/system-resources", response_model=SystemResources)
+@router.get(
+    "/system-resources", response_model=SystemResources, summary="Get system resources"
+)
 # Define an endpoint that retrieves the system's current resource usage.
 # It requires a current user dependency which is resolved by the get_current_user function.
 # The endpoint will return data conforming to the SystemResources model.

@@ -17,7 +17,7 @@ def update_timezone(timezone: str) -> bool:
         return False
 
 
-@router.post("/set_timezone/")
+@router.post("/set_timezone/", summary="Configure time zone")
 async def set_timezone_endpoint(
     timezone_data: Timezone, current_user: str = Depends(get_current_user)
 ):

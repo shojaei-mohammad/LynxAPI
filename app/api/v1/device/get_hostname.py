@@ -1,4 +1,5 @@
 import platform
+
 from fastapi import APIRouter, Depends
 
 from app.dependencies.token_dependency import get_current_user
@@ -17,7 +18,7 @@ def fetch_hostname() -> str:
     return platform.node()
 
 
-@router.get("/device/hostname", response_model=HostnameResponse)
+@router.get("/device/hostname", response_model=HostnameResponse, summary="Get hostname")
 async def hostname_info(current_user: str = Depends(get_current_user)) -> dict:
     """
     Endpoint to fetch the system's hostname.

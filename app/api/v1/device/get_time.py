@@ -38,7 +38,11 @@ def get_system_time_details() -> dict:
     return {"Time": time_str, "Date": date_str, "Zone": tz_string}
 
 
-@router.get("/device/clock", response_model=TimeDetails)
+@router.get(
+    "/device/clock",
+    response_model=TimeDetails,
+    summary="Get system datatime and timezone",
+)
 async def system_time_info(current_user: str = Depends(get_current_user)) -> dict:
     """
     Endpoint to fetch the system's current time details.

@@ -31,6 +31,7 @@ app.include_router(device.get_interface_by_name.router, prefix="/api", tags=["co
 app.include_router(device.set_timezone.router, prefix="/api", tags=["core"])
 app.include_router(device.set_hostname.router, prefix="/api", tags=["core"])
 app.include_router(device.set_ip_settings.router, prefix="/api", tags=["core"])
+app.include_router(device.set_wifi.router, prefix="/api", tags=["core"])
 
 
 @app.exception_handler(HTTPException)

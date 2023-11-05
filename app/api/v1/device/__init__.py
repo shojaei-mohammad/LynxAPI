@@ -7,3 +7,4 @@ from .get_time import *
 from .set_hostname import *
 from .set_ip_settings import *
 from .set_timezone import *
+from .set_wifi import *

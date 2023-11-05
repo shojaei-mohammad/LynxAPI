@@ -49,7 +49,11 @@ def get_hostname_from_file() -> str:
         return f.read().strip()
 
 
-@router.get("/device/info", response_model=SystemInfoResponse)
+@router.get(
+    "/device/info",
+    response_model=SystemInfoResponse,
+    summary="Get general os information",
+)
 async def device_info(current_user: str = Depends(get_current_user)) -> Dict[str, str]:
     """
     Endpoint to fetch the device's general information.

@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
 import psutil
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.dependencies.token_dependency import get_current_user
-from app.schemas.interfaces import InterfaceDetail, InterfaceRequest
+from app.schemas.interfaces import InterfaceDetail
 
 router = APIRouter()
 
@@ -44,7 +44,11 @@ def get_interface_detail_by_name(interface_name: str) -> dict:
     return {"addresses": addresses, "stats": stats_detail}
 
 
-@router.get("/device/interface/{interface_name}", response_model=InterfaceDetail)
+@router.get(
+    "/device/interface/{interface_name}",
+    response_model=InterfaceDetail,
+    summary="Get interface detail by interaface name",
+)
 async def interface_info_by_name(
     interface_name: str, current_user: str = Depends(get_current_user)
 ) -> dict:

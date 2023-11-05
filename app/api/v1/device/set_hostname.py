@@ -17,7 +17,7 @@ def update_hostname(hostname: str) -> bool:
         return False
 
 
-@router.post("/set_hostname/")
+@router.post("/set_hostname/", summary="Configure hostname")
 async def set_hostname_endpoint(
     hostname_data: Hostname, current_user: str = Depends(get_current_user)
 ):
@@ -35,6 +35,8 @@ async def set_hostname_endpoint(
 
     Raises:
         HTTPException: If there's an error updating the hostname.
+        :param hostname_data:
+        :param current_user:
     """
     result = update_hostname(hostname_data.hostname)
     if result:
