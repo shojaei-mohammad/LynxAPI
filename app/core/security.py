@@ -3,36 +3,65 @@ Security Utilities Module
 
 This module provides utility functions to handle authentication and token generation for the application.
 It offers methods to verify hashed passwords, generate password hashes, create JWT access tokens,
-and authenticate users against the system's user accounts using the PAM (Pluggable Authentication Modules) interface.
+and authenticate users against the database.
 
 Main functionalities include:
 - Password hashing and verification using bcrypt.
 - JWT token creation with expiration.
-- Authenticating users against the system using PAM.
-
-Note: This module assumes the system is UNIX-like with PAM support.
+- Authenticating users against the database.
 
 Dependencies:
 - jwt: For creating and decoding JWT tokens.
-- pam: For UNIX system user authentication.
 - passlib: For password hashing and verification.
 - app.core.config: For application configurations like the secret key.
 """
 
-import jwt
 from datetime import datetime, timedelta
-import pam
+
+import jwt
 from passlib.context import CryptContext
-from app.core import config
-import logging
+from sqlalchemy.orm import Session
+
+from app.core.config import API_SECRET_KEY, API_ALGORITHM
+from app.db.models import User
+from app.utils.logger import configure_logger
 
 # Setup logging
-logger = logging.getLogger(__name__)
+logger = configure_logger()
 
-# Secret key to encode and decode JWT token
-SECRET_KEY = config.SECRET_KEY
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+# Define the JWTError exception
+class JWTError(Exception):
+    """Custom exception for JWT-related errors."""
+
+    pass
+
+
+def decode_token(token: str):
+    """
+    Decode a JWT token and return the payload.
+
+    Args:
+    - token (str): The JWT token to decode.
+
+    Returns:
+    - dict: Decoded payload of the JWT token.
+
+    Raises:
+    - JWTError: If the token has expired or is invalid.
+    """
+    try:
+        payload = jwt.decode(token, API_SECRET_KEY, algorithms=[API_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        logger.error("Token has expired")
+        raise JWTError("Token has expired")
+    except JWTError as e:
+        logger.error(f"Invalid token. Reason: {str(e)}")
+        raise JWTError("Invalid token")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -80,27 +109,33 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     try:
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
+        encoded_jwt = jwt.encode(to_encode, API_SECRET_KEY, algorithm="HS256")
     except Exception as e:
         logger.error(f"Error encoding JWT: {e}")
         raise ValueError("Error encoding JWT")
     return encoded_jwt
 
 
-def authenticate_user(username: str, password: str) -> bool:
+def authenticate_user(db: Session, username: str, password: str) -> bool:
     """
-    Authenticate a user against the system's user accounts.
+    Authenticate a user against the users stored in the database.
 
     Args:
+    - db (Session): The database session to use for queries.
     - username (str): The username to authenticate.
     - password (str): The associated password.
 
     Returns:
     - bool: True if authentication was successful, False otherwise.
     """
-    p = pam.pam()
     try:
-        return p.authenticate(username, password)
+        # Fetch the user from the database
+        user = db.query(User).filter(User.username == username).first()
+
+        # If the user exists and the password is correct, return True
+        if user and verify_password(password, user.hashed_password):
+            return True
+        return False
     except Exception as e:
         logger.error(f"Error during authentication: {e}")
         return False
