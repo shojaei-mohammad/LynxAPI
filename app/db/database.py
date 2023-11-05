@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.core.config import SQLALCHEMY_DATABASE_ABS_URL
+from app.core.config import SQLALCHEMY_DATABASE_URL
 
 # Create the database engine
-engine = create_engine(SQLALCHEMY_DATABASE_ABS_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # Create a local session factory bound to the engine
 SessionLocal = sessionmaker(bind=engine)
