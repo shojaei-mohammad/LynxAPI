@@ -20,7 +20,7 @@ RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
 # Copy the current directory contents into the container at /src
-COPY . .
+COPY ../deployments .
 
 COPY app/main.py .
 
