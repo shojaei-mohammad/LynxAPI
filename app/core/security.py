@@ -78,19 +78,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password: str) -> str:
-    """
-    Generate a bcrypt hashed version of the password.
-
-    Args:
-    - password (str): The plain-text password to hash.
-
-    Returns:
-    - str: The hashed version of the password.
-    """
-    return password_context.hash(password)
-
-
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     """
     Create a JWT access token.
@@ -139,3 +126,11 @@ def authenticate_user(db: Session, username: str, password: str) -> bool:
     except Exception as e:
         logger.error(f"Error during authentication: {e}")
         return False
+
+
+__all__ = [
+    "decode_token",
+    "verify_password",
+    "create_access_token",
+    "authenticate_user",
+]
