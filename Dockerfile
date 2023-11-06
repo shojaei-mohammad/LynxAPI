@@ -30,4 +30,3 @@ RUN python app/db/session.py
 
 # Specify the command to run on container start
 CMD ["python", "main.py"]
-
