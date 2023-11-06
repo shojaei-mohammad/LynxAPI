@@ -1,11 +1,11 @@
 import bcrypt
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
+from app.core.config import SQLALCHEMY_DATABASE_URL
 from models import User, Role
 
-DATABASE_URL = "sqlite:///rbac.db"
-engine = create_engine(DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
 
