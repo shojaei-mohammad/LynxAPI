@@ -12,10 +12,8 @@ Key Functions:
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from app.core.config import SQLALCHEMY_DATABASE_URL
 from models import Base, Permission, Role
-
-# Database URL pointing to the SQLite database file.
-DATABASE_URL = "SQLALCHEMY_DATABASE_URL"
 
 
 def init_db():
@@ -30,7 +28,7 @@ def init_db():
        - An "Admin" role with the "full_access" permission.
     """
     # Create an engine connected to the SQLite database.
-    engine = create_engine(DATABASE_URL)
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
     # Create tables in the database.
     Base.metadata.create_all(engine)
