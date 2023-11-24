@@ -44,6 +44,7 @@ app.include_router(device.set_wifi.router, prefix="/api", tags=["core"])
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     """
+    
     Global HTTP exception handler.
 
     Args:
