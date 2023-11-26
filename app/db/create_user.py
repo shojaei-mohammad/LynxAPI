@@ -54,6 +54,7 @@ if __name__ == "__main__":
     print("Available roles:")
     for idx, role in enumerate(roles, start=1):
         print(f"{idx}. {role.role_name}")
+    print("Please create a username and password and assign it to the admin group for access to the API")
 
     # Take user inputs
     username_input = input("Enter the username: ")
