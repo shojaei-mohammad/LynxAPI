@@ -38,7 +38,5 @@ class HostnameResponse(BaseModel):
 
 class TimeDetails(BaseModel):
     Time: str = Field(description="The current time on the system, in HH:MM:SS format.")
-    Date: str = Field(
-        description="The current date on the system, in YYYY-MM-DD format."
-    )
+    Date: str = Field(description="The current date on the system, in YYYY-MM-DD format.")
     Zone: str = Field(description="The current timezone of the system.")

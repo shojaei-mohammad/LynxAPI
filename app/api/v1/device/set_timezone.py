@@ -10,10 +10,12 @@ router = APIRouter()
 
 def update_timezone(timezone: str) -> bool:
     try:
+        # Set the new timezone
         subprocess.run(["timedatectl", "set-timezone", timezone], check=True)
+
         return True
     except Exception as e:
-        print(f"Error setting timezone: {e}")
+        print(f"Error updating timezone or restarting clock service: {e}")
         return False
 
 
