@@ -10,6 +10,9 @@ logs/
 # File-based project format
 *.iws
 
+# flake8 config file
+.flake8
+
 # IntelliJ
 out/
 
